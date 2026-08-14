@@ -194,11 +194,18 @@ app.post('/api/horas-extra', authenticateToken, async (req, res) => {
       }
 
       // Validar límite semanal (Lunes a Domingo)
-      const dateObj = new Date(fecha);
+      const dateParts = fecha.split('-').map(Number);
+      const dateObj = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
       const dayOfWeek = dateObj.getDay(); // 0: Domingo, 1: Lunes, etc.
-      const diffToMonday = dateObj.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
-      const mondayDate = new Date(dateObj.setDate(diffToMonday)).toISOString().split('T')[0];
-      const sundayDate = new Date(dateObj.setDate(diffToMonday + 6)).toISOString().split('T')[0];
+      const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+
+      const monday = new Date(dateObj);
+      monday.setDate(dateObj.getDate() + diffToMonday);
+      const sunday = new Date(monday);
+      sunday.setDate(monday.getDate() + 6);
+
+      const mondayDate = monday.toISOString().split('T')[0];
+      const sundayDate = sunday.toISOString().split('T')[0];
 
       const [semanaRows] = await db.query(
         'SELECT SUM(horas_calculadas) as total_semana FROM registro_horas_extra WHERE funcionario_id = ? AND fecha BETWEEN ? AND ? AND tipo_jornada = "suplementaria" AND estado != "rechazado"',

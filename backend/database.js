@@ -8,9 +8,9 @@ let useMock = false;
 
 // --- ESTRUCTURAS EN MEMORIA DE RESPALDO (MOCK DB) ---
 const mockUsers = [
-  { id: 1, username: 'admin_sucua', password_hash: '$2b$10$a1w.iT72vLd1b7jM33Q6.OrpM3fA40R/r7Yc.R8j.322a3j0x1y1u', role: 'admin', estado: 1 },
-  { id: 2, username: 'jefe_rrhh', password_hash: '$2b$10$a1w.iT72vLd1b7jM33Q6.OrpM3fA40R/r7Yc.R8j.322a3j0x1y1u', role: 'autorizador', estado: 1 },
-  { id: 3, username: 'operador_1', password_hash: '$2b$10$a1w.iT72vLd1b7jM33Q6.OrpM3fA40R/r7Yc.R8j.322a3j0x1y1u', role: 'operador', estado: 1 }
+  { id: 1, username: 'admin_sucua', password_hash: '$2a$10$VoLpcvIaYPZo/YAJfY9q/u.tMbMmwdfTkEL7z1AOhCQvEg2zIi3m2', role: 'admin', estado: 1 },
+  { id: 2, username: 'jefe_rrhh', password_hash: '$2a$10$VoLpcvIaYPZo/YAJfY9q/u.tMbMmwdfTkEL7z1AOhCQvEg2zIi3m2', role: 'autorizador', estado: 1 },
+  { id: 3, username: 'operador_1', password_hash: '$2a$10$VoLpcvIaYPZo/YAJfY9q/u.tMbMmwdfTkEL7z1AOhCQvEg2zIi3m2', role: 'operador', estado: 1 }
 ];
 
 const mockFuncionarios = [
