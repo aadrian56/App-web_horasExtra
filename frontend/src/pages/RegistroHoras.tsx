@@ -4,6 +4,7 @@ import { Button } from '../components/Button';
 import { Toast, ToastMessage } from '../components/Toast';
 import { StatusBadge } from '../components/StatusBadge';
 import { Calendar, User, Clock, AlertTriangle, Calculator, FileCheck } from 'lucide-react';
+import { calcularValorPago } from '../utils/calculations';
 
 interface Funcionario {
   id: number;
@@ -89,37 +90,17 @@ export const RegistroHoras: React.FC = () => {
     if (!func) return;
 
     const rmu = parseFloat(func.rmu.toString());
-    const valorHoraOrd = rmu / 240;
-    setLiveValorOrdinario(valorHoraOrd);
+    const { horasTotales, horasNocturnas, valorTotal } = calcularValorPago({
+      rmu,
+      inicio: horaInicio,
+      fin: horaFin,
+      tipoJornada
+    });
 
-    // Calcular duración total
-    const [h1, m1] = horaInicio.split(':').map(Number);
-    const [h2, m2] = horaFin.split(':').map(Number);
-    let mins1 = h1 * 60 + m1;
-    let mins2 = h2 * 60 + m2;
-    if (mins2 < mins1) mins2 += 24 * 60; // cruce de medianoche
-    const totalHoras = (mins2 - mins1) / 60;
-    setLiveHours(totalHoras);
-
-    // Calcular nocturnidad (19:00 a 06:00)
-    let minsNocturnas = 0;
-    for (let m = mins1; m < mins2; m++) {
-      const minDelDia = m % (24 * 60);
-      if (minDelDia >= 1140 || minDelDia < 360) {
-        minsNocturnas++;
-      }
-    }
-    const nocturnas = minsNocturnas / 60;
-    setLiveNocturnas(nocturnas);
-    const diurnas = totalHoras - nocturnas;
-
-    // Calcular monto final estimado
-    const factorDiurno = tipoJornada === 'suplementaria' ? 1.25 : 2.00;
-    const factorNocturno = tipoJornada === 'suplementaria' ? 1.50 : 2.25;
-
-    const valorEstimado = (diurnas * valorHoraOrd * factorDiurno) + (nocturnas * valorHoraOrd * factorNocturno);
-    setLiveValor(parseFloat(valorEstimado.toFixed(2)));
-
+    setLiveValorOrdinario(rmu / 240);
+    setLiveHours(horasTotales);
+    setLiveNocturnas(horasNocturnas);
+    setLiveValor(valorTotal);
   }, [funcionarioId, horaInicio, horaFin, tipoJornada, funcionarios, fecha]);
 
   const handleSubmit = async (e: React.FormEvent) => {

@@ -46,5 +46,5 @@ Este archivo contiene el desglose de tareas necesarias para construir el sistema
   - [x] Diseñar el pie de página con los tres bloques de firmas: "Elaborado por", "Revisado por" y "Autorizado por".
 
 ## Fase 6: Pruebas y Validación
-- [ ] **Tarea 6.1:** Crear pruebas unitarias con Vitest para verificar la matemática exacta de las fórmulas (valores con recargo ordinario, nocturno y combinados).
-- [ ] **Tarea 6.2:** Probar la adaptabilidad responsive en pantallas de tablets y móviles simulando el flujo completo de registro y autorización.
+- [x] **Tarea 6.1:** Crear pruebas unitarias con Vitest para verificar la matemática exacta de las fórmulas (valores con recargo ordinario, nocturno y combinados).
+- [x] **Tarea 6.2:** Probar la adaptabilidad responsive en pantallas de tablets y móviles simulando el flujo completo de registro y autorización.
