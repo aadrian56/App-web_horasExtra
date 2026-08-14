@@ -34,11 +34,11 @@ Este archivo contiene el desglose de tareas necesarias para construir el sistema
   - [x] Badges visuales de estado con texto explícito e íconos representativos (no depender solo del color).
 
 ## Fase 4: Vistas y Formularios del Frontend
-- [ ] **Tarea 4.1:** Desarrollar la pantalla de Login y protección de rutas según el rol.
-- [ ] **Tarea 4.2:** Desarrollar la pantalla de Administración de Funcionarios (Formulario adaptable y accesible).
-- [ ] **Tarea 4.3:** Desarrollar la pantalla de Registro de Horas Extra:
-  - [ ] Implementar el visualizador dinámico de cálculo en vivo (Glassmorphism con gradiente animado) al cambiar horas de inicio/fin en el formulario.
-- [ ] **Tarea 4.4:** Desarrollar la pantalla de Aprobación de Horas (exclusiva para el rol autorizador).
+- [x] **Tarea 4.1:** Desarrollar la pantalla de Login y protección de rutas según el rol.
+- [x] **Tarea 4.2:** Desarrollar la pantalla de Administración de Funcionarios (Formulario adaptable y accesible).
+- [x] **Tarea 4.3:** Desarrollar la pantalla de Registro de Horas Extra:
+  - [x] Implementar el visualizador dinámico de cálculo en vivo (Glassmorphism con gradiente animado) al cambiar horas de inicio/fin en el formulario.
+- [x] **Tarea 4.4:** Desarrollar la pantalla de Aprobación de Horas (exclusiva para el rol autorizador).
 
 ## Fase 5: Reportes y Bloques de Firma
 - [ ] **Tarea 5.1:** Crear la página de Reportes Mensuales con filtros por mes/año y vistas consolidadas.
