@@ -50,8 +50,9 @@ Cada funcionario DEBE tener registrado:
 - Todo cálculo monetario DEBE usar precisión de dos decimales (centavos)
 - El sistema DEBE almacenar el RMU vigente al momento del registro de cada hora extra (no recalcular retroactivamente si el salario cambia)
 - Cada registro de hora extra DEBE contener: funcionario, fecha, hora inicio, hora fin, tipo de hora, valor calculado, y estado de autorización
-- El sistema DEBE generar reportes mensuales por funcionario y consolidados
-- Todos los registros son inmutables una vez autorizados; las correcciones se realizan mediante registros de anulación
+- El sistema DEBE generar reportes mensuales por funcionario y consolidados.
+- Los reportes generados DEBEN incluir espacios físicos o digitales para las firmas de responsabilidad de los administrativos (Elaborado por, Revisado por, Autorizado por).
+- Todos los registros son inmutables una vez autorizados; las correcciones se realizan mediante registros de anulación.
 
 ### IV. Simplicidad y Usabilidad Prioritaria
 

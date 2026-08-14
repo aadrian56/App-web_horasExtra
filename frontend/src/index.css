@@ -1,0 +1,8 @@
+@import "tailwindcss";
+
+@theme {
+  --color-sucua-green: #0F766E;
+  --color-sucua-yellow: #F59E0B;
+  --color-sucua-white: #FFFFFF;
+  --color-sucua-gray: #F8FAFC;
+}
