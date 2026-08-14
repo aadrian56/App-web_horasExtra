@@ -4,43 +4,60 @@
 
 En lugar de saltar directamente a escribir código, Spec Kit te permite definir primero las reglas de negocio, la arquitectura y las tareas. Luego, tu agente de IA utilizará estos documentos para escribir el código de manera más precisa y estructurada.
 
-## 🚀 Flujo de Trabajo Principal
+---
 
-El uso de Spec Kit se divide en 5 pasos clave. Debes ejecutar estos comandos en el chat de tu agente de IA (como Antigravity o GitHub Copilot) en orden:
+## 💻 1. Comandos de la Interfaz de Línea de Comandos (Specify CLI)
 
-### 1. Definir los Principios (`/speckit.constitution`)
-Establece las "leyes" del proyecto: convenciones de código, reglas de testing, arquitectura general y restricciones.
-**Ejemplo:**
-> `/speckit.constitution Crea reglas para un proyecto en React usando TailwindCSS. Todo el código debe estar en español y tener pruebas unitarias.`
+El CLI de `specify` se ejecuta directamente en la terminal de tu sistema operativo para configurar, gestionar e inicializar proyectos:
 
-### 2. Crear la Especificación (`/speckit.specify`)
-Describe **qué** vas a construir y **por qué** (desde la perspectiva del usuario), sin entrar en detalles técnicos todavía.
-**Ejemplo:**
-> `/speckit.specify Quiero construir una página de inicio de sesión donde los usuarios puedan entrar con correo y contraseña o usando su cuenta de Google. Debe incluir un enlace de 'olvidé mi contraseña'.`
+- **`specify init <nombre-proyecto> --integration <nombre>`**
+  Inicializa un nuevo proyecto estructurado de Spec Kit. Crea la carpeta del proyecto y la subcarpeta `.specify` con los archivos de configuración y memorias correspondientes.
+  *Ejemplo:* `specify init mi-app --integration copilot`
 
-### 3. Planificar la Implementación (`/speckit.plan`)
-Define **cómo** se va a construir técnicamente lo que especificaste en el paso anterior. Aquí defines el stack tecnológico y la estructura de datos.
-**Ejemplo:**
-> `/speckit.plan Utilizaremos Firebase para la autenticación. El estado se manejará con React Context. Los estilos usarán componentes de Tailwind predefinidos.`
+- **`specify self check`**
+  Comprueba de forma segura (modo lectura) si existe una versión más reciente de `specify-cli` publicada en PyPI o GitHub.
 
-### 4. Generar Tareas (`/speckit.tasks`)
-El agente leerá la especificación y el plan para dividir el trabajo en una lista detallada de tareas pequeñas y manejables (creará un archivo `tasks.md`).
-**Ejemplo:**
-> `/speckit.tasks`
+- **`specify self upgrade`**
+  Actualiza en el acto tu instalación local de `specify-cli` a la última versión estable (detecta si se instaló con `uv tool` o `pipx`).
 
-### 5. Implementar el Código (`/speckit.implement`)
-El agente de IA comenzará a escribir el código real, guiándose estrictamente por el plan y marcando las tareas como completadas a medida que avanza.
-**Ejemplo:**
-> `/speckit.implement`
+- **`specify self upgrade --dry-run`**
+  Muestra una vista previa de lo que ejecutaría el comando de actualización, sin descargar ni modificar ningún archivo.
+
+- **`specify self upgrade --tag <vX.Y.Z>`**
+  Fuerza la instalación o actualización de una versión o etiqueta específica de Spec Kit (ej: `v0.12.11`).
 
 ---
 
-## 🛠️ Comandos de Utilidad Adicionales
+## 🤖 2. Comandos del Agente de IA (Slash Commands)
 
-- **`/speckit.analyze`**: Revisa si hay inconsistencias entre lo que definiste en la especificación, el plan y las tareas. Útil si has hecho cambios manuales.
-- **`/speckit.revise`**: Permite hacer modificaciones o agregar nuevas características a una especificación o plan que ya existe, actualizando los documentos de manera inteligente.
+Estos comandos se escriben dentro del chat del agente de programación (ej. Antigravity o Copilot) para guiar el desarrollo de software paso a paso:
 
-## 💡 Mejores Prácticas
+### Flujo Principal de Desarrollo:
+1. **`/speckit.constitution`**
+   Crea o actualiza las directrices, leyes y convenciones de código generales del proyecto (ej: idioma del código, reglas de testing, restricciones de arquitectura).
+   *Ejemplo:* `/speckit.constitution Define reglas para React + Tailwind en español con testing Vitest.`
 
-- **Sé específico en el paso 2 (`specify`) y 3 (`plan`)**: Cuantos más detalles le des a la IA sobre cómo quieres las cosas, menos errores cometerá en la implementación.
-- **Revisa los archivos generados**: Spec Kit creará archivos markdown (`spec.md`, `plan.md`, `tasks.md`, `constitution.md`). Puedes abrirlos y editarlos manualmente antes de pedirle a la IA que genere el código.
+2. **`/speckit.specify`**
+   Define **qué** se va a construir y **por qué** (los requisitos desde el punto de vista del usuario), sin discutir código ni bases de datos.
+   *Ejemplo:* `/speckit.specify Quiero una pantalla para registrar las horas extra con cálculo automático.`
+
+3. **`/speckit.plan`**
+   Establece **cómo** se implementará técnicamente la especificación (el stack tecnológico, el diseño de la base de datos, algoritmos clave).
+   *Ejemplo:* `/speckit.plan Usaremos React, Node.js y MySQL. Definir tablas para funcionarios y registros.`
+
+4. **`/speckit.tasks`**
+   Lee la especificación y el plan de implementación para dividirlos en una lista ordenada de tareas pequeñas en `tasks.md`.
+   *Ejemplo:* `/speckit.tasks`
+
+5. **`/speckit.implement`** (o `/speckit.implement <fase>`)
+   Comienza a escribir el código fuente real del proyecto. Sigue la lista de tareas y marca las casillas completadas a medida que escribe los archivos.
+   *Ejemplo:* `/speckit.implement fase 1`
+
+### Comandos de Utilidad Adicionales:
+- **`/speckit.analyze`**
+  Realiza un análisis no destructivo para verificar la coherencia y calidad de los documentos generados. Detecta si hay contradicciones entre la especificación, el plan técnico y las tareas.
+  *Ejemplo:* `/speckit.analyze`
+
+- **`/speckit.revise`**
+  Permite realizar modificaciones o inyectar nuevos requerimientos sobre las especificaciones o planes técnicos ya existentes, actualizando toda la documentación en cascada.
+  *Ejemplo:* `/speckit.revise Agrega un botón para exportar reportes mensuales a Excel.`

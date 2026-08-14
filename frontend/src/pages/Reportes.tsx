@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import api from '../services/api';
 import { Button } from '../components/Button';
-import { Toast, ToastMessage } from '../components/Toast';
+import { Toast } from '../components/Toast';
+import type { ToastMessage } from '../components/Toast';
 import { FileText, Printer, Search, CalendarDays } from 'lucide-react';
 
 interface ReporteData {
