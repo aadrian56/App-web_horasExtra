@@ -41,9 +41,9 @@ Este archivo contiene el desglose de tareas necesarias para construir el sistema
 - [x] **Tarea 4.4:** Desarrollar la pantalla de Aprobación de Horas (exclusiva para el rol autorizador).
 
 ## Fase 5: Reportes y Bloques de Firma
-- [ ] **Tarea 5.1:** Crear la página de Reportes Mensuales con filtros por mes/año y vistas consolidadas.
-- [ ] **Tarea 5.2:** Implementar la exportación del reporte consolidado en PDF con estilo limpio y profesional.
-  - [ ] Diseñar el pie de página con los tres bloques de firmas: "Elaborado por", "Revisado por" y "Autorizado por".
+- [x] **Tarea 5.1:** Crear la página de Reportes Mensuales con filtros por mes/año y vistas consolidadas.
+- [x] **Tarea 5.2:** Implementar la exportación del reporte consolidado en PDF con estilo limpio y profesional.
+  - [x] Diseñar el pie de página con los tres bloques de firmas: "Elaborado por", "Revisado por" y "Autorizado por".
 
 ## Fase 6: Pruebas y Validación
 - [ ] **Tarea 6.1:** Crear pruebas unitarias con Vitest para verificar la matemática exacta de las fórmulas (valores con recargo ordinario, nocturno y combinados).
