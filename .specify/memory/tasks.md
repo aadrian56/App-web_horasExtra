@@ -62,3 +62,28 @@ Este archivo contiene el desglose de tareas necesarias para construir el sistema
 - [x] **Tarea 7.5:** Implementar el ranking Top 5 de funcionarios con barra de progreso y drill-down interactivo.
 - [x] **Tarea 7.6:** Integrar la tabla de últimas actividades y aplicar los efectos y estilos visuales premium.
 
+## Fase 8: Módulo de Calendario de Feriados (Dinámico)
+- [x] **Tarea 8.1:** Crear la tabla `feriados` en la base de datos MySQL e insertar datos semilla de feriados comunes en `seed_db.js`.
+- [x] **Tarea 8.2:** Implementar endpoints CRUD de feriados (`GET /api/feriados`, `POST /api/feriados`, `DELETE /api/feriados/:id`) en `server.js`.
+- [x] **Tarea 8.3:** Modificar `POST /api/horas-extra` para verificar si la fecha del registro coincide con un feriado en la base de datos o fin de semana, forzando y validando que el tipo de jornada sea "extraordinaria".
+- [x] **Tarea 8.4:** Desarrollar la vista `Feriados.tsx` en el frontend para permitir al Administrador visualizar, agregar y eliminar feriados de forma dinámica.
+- [x] **Tarea 8.5:** Modificar la vista `RegistroHoras.tsx` para obtener los feriados desde el backend y autocompletar de forma restrictiva la jornada a "Extraordinaria" si la fecha coincide con un feriado o fin de semana.
+- [x] **Tarea 8.6:** Registrar la ruta `/feriados` en `App.tsx` y enlazarla en el menú lateral de `Layout.tsx`.
+
+## Fase 9: Feriados Recurrentes (Anuales)
+- [x] **Tarea 9.1:** Añadir la columna `recurrente` a la tabla `feriados` en la base de datos MySQL, actualizando `init.sql`, `database.js` y `seed_db.js`.
+- [x] **Tarea 9.2:** Configurar feriados fijos semilla (Año Nuevo, Batalla de Pichincha, Cantonización de Sucúa, Navidad) como recurrentes (`recurrente = 1`) en `seed_db.js`.
+- [x] **Tarea 9.3:** Modificar `POST /api/feriados` para recibir y guardar la propiedad `recurrente` (booleano).
+- [x] **Tarea 9.4:** Modificar la consulta en `POST /api/horas-extra` para verificar feriados recurrentes comparando mes y día, independientemente del año.
+- [x] **Tarea 9.5:** Modificar `Feriados.tsx` para agregar la opción "¿Se repite todos los años?" en el formulario y visualizar badges identificativos en la lista.
+- [x] **Tarea 9.6:** Modificar `RegistroHoras.tsx` para que `checkEsFeriadoODescanso` valide feriados recurrentes omitiendo el año en la comparación.
+
+## Fase 10: Restricción de Fecha Futura
+- [ ] **Tarea 10.1:** Modificar la ruta `POST /api/horas-extra` en `server.js` para validar que la fecha recibida no sea superior a la fecha actual del servidor.
+- [ ] **Tarea 10.2:** Actualizar el input de fecha en `RegistroHoras.tsx` para configurar el atributo `max` dinámicamente y validar el envío del lado del cliente.
+
+
+
+
+
+

@@ -138,6 +138,59 @@ app.put('/api/funcionarios/:id', authenticateToken, async (req, res) => {
   }
 });
 
+// --- RUTAS DE FERIADOS ---
+app.get('/api/feriados', authenticateToken, async (req, res) => {
+  try {
+    const [rows] = await db.query('SELECT * FROM feriados ORDER BY fecha ASC');
+    res.json(rows);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/feriados', authenticateToken, async (req, res) => {
+  const { nombre, fecha, recurrente } = req.body;
+
+  if (!nombre || !fecha) {
+    return res.status(400).json({ error: 'El nombre y la fecha del feriado son requeridos.' });
+  }
+
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Acceso denegado. Solo administradores pueden agregar feriados.' });
+  }
+
+  try {
+    const [existing] = await db.query('SELECT id FROM feriados WHERE fecha = ?', [fecha]);
+    if (existing.length > 0) {
+      return res.status(400).json({ error: 'Ya existe un feriado registrado para esta fecha.' });
+    }
+
+    const [result] = await db.query(
+      'INSERT INTO feriados (nombre, fecha, recurrente) VALUES (?, ?, ?)',
+      [nombre, fecha, recurrente ? 1 : 0]
+    );
+
+    res.status(201).json({ message: 'Feriado registrado exitosamente.', id: result.insertId });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.delete('/api/feriados/:id', authenticateToken, async (req, res) => {
+  const { id } = req.params;
+
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Acceso denegado. Solo administradores pueden eliminar feriados.' });
+  }
+
+  try {
+    await db.query('DELETE FROM feriados WHERE id = ?', [id]);
+    res.json({ message: 'Feriado eliminado exitosamente.' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // --- RUTAS DE HORAS EXTRA ---
 app.get('/api/horas-extra', authenticateToken, async (req, res) => {
   try {
@@ -162,6 +215,24 @@ app.post('/api/horas-extra', authenticateToken, async (req, res) => {
   }
 
   try {
+    // 0. Validar si la fecha corresponde a un feriado o fin de semana
+    const dateParts = fecha.split('-').map(Number);
+    const dateObj = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
+    const dayOfWeek = dateObj.getDay(); // 0: Domingo, 6: Sábado
+    const esFinDeSemana = dayOfWeek === 0 || dayOfWeek === 6;
+
+    const [feriadoRows] = await db.query(
+      'SELECT id FROM feriados WHERE fecha = ? OR (recurrente = 1 AND MONTH(fecha) = MONTH(?) AND DAY(fecha) = DAY(?))',
+      [fecha, fecha, fecha]
+    );
+    const esFeriado = feriadoRows.length > 0;
+
+    if ((esFinDeSemana || esFeriado) && tipo_jornada !== 'extraordinaria') {
+      return res.status(400).json({ 
+        error: `La fecha seleccionada (${fecha}) corresponde a un día de descanso obligatorio (${esFinDeSemana ? 'Fin de semana' : 'Feriado'}). Debe registrarse como jornada Extraordinaria.` 
+      });
+    }
+
     // 1. Obtener funcionario y congelar RMU
     const [funcRows] = await db.query('SELECT * FROM funcionarios WHERE id = ?', [funcionario_id]);
     if (funcRows.length === 0) {
@@ -194,9 +265,6 @@ app.post('/api/horas-extra', authenticateToken, async (req, res) => {
       }
 
       // Validar límite semanal (Lunes a Domingo)
-      const dateParts = fecha.split('-').map(Number);
-      const dateObj = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
-      const dayOfWeek = dateObj.getDay(); // 0: Domingo, 1: Lunes, etc.
       const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
 
       const monday = new Date(dateObj);

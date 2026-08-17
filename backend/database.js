@@ -13,6 +13,16 @@ const mockUsers = [
   { id: 3, username: 'operador_1', password_hash: '$2a$10$VoLpcvIaYPZo/YAJfY9q/u.tMbMmwdfTkEL7z1AOhCQvEg2zIi3m2', role: 'operador', estado: 1 }
 ];
 
+const mockFeriados = [
+  { id: 1, nombre: 'Año Nuevo', fecha: '2026-01-01', recurrente: 1 },
+  { id: 2, nombre: 'Día del Trabajo', fecha: '2026-05-01', recurrente: 1 },
+  { id: 3, nombre: 'Batalla de Pichincha', fecha: '2026-05-24', recurrente: 1 },
+  { id: 4, nombre: 'Primer Grito de Independencia', fecha: '2026-08-10', recurrente: 1 },
+  { id: 5, nombre: 'Cantonización de Sucúa', fecha: '2026-12-08', recurrente: 1 },
+  { id: 6, nombre: 'Navidad', fecha: '2026-12-25', recurrente: 1 }
+];
+
+
 const mockFuncionarios = [
   { id: 1, cedula: '1400654321', nombres_apellidos: 'Juan Carlos Perez Avila', tipo: 'guardia', rmu: 527.00, estado: 1 },
   { id: 2, cedula: '1400987654', nombres_apellidos: 'Maria Elena Chimbo Naula', tipo: 'limpieza', rmu: 497.00, estado: 1 },
@@ -326,6 +336,56 @@ const dbAdapter = {
       // Ordenar por nombres
       result.sort((a, b) => a.nombres_apellidos.localeCompare(b.nombres_apellidos));
       return [result];
+    }
+
+    // 14. SELECT feriados
+    if (sqlClean.includes('select * from feriados')) {
+      const sorted = [...mockFeriados].sort((a, b) => a.fecha.localeCompare(b.fecha));
+      return [sorted];
+    }
+
+    // 15. SELECT check feriado (exacto o recurrente)
+    if (sqlClean.includes('select id from feriados where')) {
+      const fecha = params[0];
+      const targetFechaStr = fecha.split('T')[0];
+      const [year, month, day] = targetFechaStr.split('-').map(Number);
+
+      const found = mockFeriados.filter(f => {
+        const fClean = f.fecha.split('T')[0];
+        if (f.recurrente) {
+          const [, fMonth, fDay] = fClean.split('-').map(Number);
+          return fMonth === month && fDay === day;
+        }
+        return fClean === targetFechaStr;
+      });
+      return [found];
+    }
+
+    // 16. INSERT feriado
+    if (sqlClean.includes('insert into feriados')) {
+      const [nombre, fecha, recurrente] = params;
+      const exists = mockFeriados.some(f => f.fecha === fecha);
+      if (exists) {
+        throw new Error('Ya existe un feriado registrado para esta fecha.');
+      }
+      const newId = mockFeriados.length > 0 ? Math.max(...mockFeriados.map(f => f.id)) + 1 : 1;
+      mockFeriados.push({
+        id: newId,
+        nombre,
+        fecha,
+        recurrente: recurrente ? 1 : 0
+      });
+      return [{ insertId: newId }];
+    }
+
+    // 17. DELETE feriado
+    if (sqlClean.includes('delete from feriados where id =')) {
+      const id = params[0];
+      const index = mockFeriados.findIndex(f => f.id === parseInt(id));
+      if (index !== -1) {
+        mockFeriados.splice(index, 1);
+      }
+      return [{}];
     }
 
     console.warn('Consulta simulada no identificada:', sqlClean);

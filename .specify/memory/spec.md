@@ -39,6 +39,8 @@ Como **Sistema**, debo validar las restricciones legales antes de guardar un reg
 - Las horas suplementarias no pueden exceder 4 horas diarias.
 - Las horas suplementarias no pueden exceder 12 horas semanales.
 - Si se superan estos límites, el sistema debe alertar visualmente y solicitar confirmación especial o denegar el registro (según políticas de control del GAD).
+- **Restricción de fecha futura**: El sistema debe prohibir estrictamente el registro de horas extra para fechas futuras (posteriores a la fecha actual del sistema). Esto se validará restringiendo la selección en el frontend y mediante verificación de reglas en el servidor.
+
 
 ### Módulo 4: Flujo de Autorización
 Como **Autorizador / Jefe de Recursos Humanos**, quiero aprobar o rechazar las horas extras pendientes.
@@ -72,10 +74,23 @@ Como **Administrador / Autorizador / Operador**, quiero visualizar un panel de c
   - Al hacer clic en un funcionario de este top, se debe aplicar un filtro rápido (drill-down) que aísle toda la información del dashboard para dicho funcionario.
 - **Lista de Actividades Recientes**:
   - Una tabla simplificada con los últimos registros que coincidan con los filtros aplicados para agilizar la revisión rápida.
+### Módulo 7: Gestión de Feriados (Calendario)
+Como **Administrador**, quiero gestionar (Crear, Leer, Eliminar) los feriados nacionales y locales del Cantón Sucúa para automatizar las reglas de negocio.
+- **Datos obligatorios por feriado**:
+  - Nombre del feriado (ej. Batalla de Pichincha).
+  - Fecha del feriado (Día/Mes/Año).
+  - Indicador de Recurrencia (Booleano: "¿Se repite todos los años?").
+- **Reglas de negocio**:
+  - Un feriado puede ser **Recurrente (Fijo)** o **Único (Variable)**. Los recurrentes se aplican anualmente en el mismo mes y día, sin importar el año. Los únicos aplican solo para el año específico registrado.
+  - Al ingresar o registrar una hora extra en la pantalla de registro, el sistema debe consultar dinámicamente si la fecha ingresada coincide con un fin de semana o con un feriado activo en el calendario (evaluando coincidencia de mes y día para feriados recurrentes, o coincidencia completa para feriados únicos).
+  - De coincidir, el sistema establecerá automáticamente el tipo de jornada en **Extraordinaria** (con recargo de 100%) y restringirá la selección manual a esta opción (o mostrará una advertencia restrictiva).
+  - El servidor (backend) validará de forma independiente en la base de datos si la fecha es un feriado (fijo o variable) o fin de semana antes de procesar el cálculo, asegurando que las reglas de la LOSEP no sean evadidas.
+
 
 ---
 
 ## 3. Requerimientos No Funcionales
+
 
 - **Interfaz y Usabilidad**: Interfaz moderna, limpia, de carga rápida y responsiva, optimizada para tablets y laptops de oficina.
 - **Seguridad**: Autenticación de usuario para restringir el acceso al personal no autorizado del GAD.

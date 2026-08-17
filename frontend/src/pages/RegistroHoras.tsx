@@ -6,7 +6,6 @@ import type { ToastMessage } from '../components/Toast';
 import { StatusBadge } from '../components/StatusBadge';
 import { Calendar, User, Clock, AlertTriangle, Calculator, FileCheck, X } from 'lucide-react';
 import { calcularValorPago } from '../utils/calculations';
-import { esFeriadoODescanso } from '../utils/holidays';
 
 interface Funcionario {
   id: number;
@@ -34,6 +33,7 @@ interface Registro {
 export const RegistroHoras: React.FC = () => {
   const [funcionarios, setFuncionarios] = useState<Funcionario[]>([]);
   const [registros, setRegistros] = useState<Registro[]>([]);
+  const [feriados, setFeriados] = useState<{ id: number; nombre: string; fecha: string; recurrente?: boolean | number }[]>([]);
   const [loading, setLoading] = useState(true);
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
@@ -86,12 +86,14 @@ export const RegistroHoras: React.FC = () => {
 
   const fetchData = async () => {
     try {
-      const [funcRes, regRes] = await Promise.all([
+      const [funcRes, regRes, feriadosRes] = await Promise.all([
         api.get('/funcionarios'),
-        api.get('/horas-extra')
+        api.get('/horas-extra'),
+        api.get('/feriados')
       ]);
       setFuncionarios(funcRes.data.filter((f: any) => f.estado));
       setRegistros(regRes.data);
+      setFeriados(feriadosRes.data);
     } catch (err: any) {
       addToast('error', 'Error al cargar los datos iniciales.');
     } finally {
@@ -130,10 +132,31 @@ export const RegistroHoras: React.FC = () => {
     setLiveValor(valorTotal);
   }, [funcionarioId, horaInicio, horaFin, tipoJornada, funcionarios, fecha]);
 
+  const checkEsFeriadoODescanso = (fechaStr: string): boolean => {
+    if (!fechaStr) return false;
+    const [year, month, day] = fechaStr.split('-').map(Number);
+    const date = new Date(year, month - 1, day);
+    const dayOfWeek = date.getDay(); // 0 = Domingo, 6 = Sábado
+    
+    // 1. Fines de semana
+    if (dayOfWeek === 0 || dayOfWeek === 6) return true;
+    
+    // 2. Feriados de base de datos
+    const dateClean = fechaStr.split('T')[0];
+    return feriados.some(f => {
+      const fClean = f.fecha.split('T')[0];
+      if (f.recurrente) {
+        const [, fMonth, fDay] = fClean.split('-').map(Number);
+        return fMonth === month && fDay === day;
+      }
+      return fClean === dateClean;
+    });
+  };
+
   const handleFechaChange = (val: string) => {
     setFecha(val);
     if (val) {
-      const esDescanso = esFeriadoODescanso(val);
+      const esDescanso = checkEsFeriadoODescanso(val);
       setTipoJornada(esDescanso ? 'extraordinaria' : 'suplementaria');
     }
   };
@@ -277,8 +300,8 @@ export const RegistroHoras: React.FC = () => {
                   className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sucua-green focus:border-transparent min-h-[44px]"
                 />
                 {fecha && (
-                  <p className={`text-xs mt-1 font-semibold ${esFeriadoODescanso(fecha) ? 'text-amber-600' : 'text-sucua-green'}`}>
-                    {esFeriadoODescanso(fecha) 
+                  <p className={`text-xs mt-1 font-semibold ${checkEsFeriadoODescanso(fecha) ? 'text-amber-600' : 'text-sucua-green'}`}>
+                    {checkEsFeriadoODescanso(fecha) 
                       ? '⏳ Descanso obligatorio (Fin de semana / Feriado)' 
                       : '✓ Jornada regular (Lunes a Viernes)'}
                   </p>

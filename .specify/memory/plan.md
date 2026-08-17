@@ -49,7 +49,16 @@ Diseñamos 3 tablas principales para cubrir las reglas de negocio e inmutabilida
 - `autorizado_por` (INT, Foreign Key -> `usuarios.id`, Nullable)
 - `fecha_autorizacion` (DATETIME, Nullable)
 
+### Tabla 4: `feriados`
+- `id` (INT, Primary Key, Auto Increment)
+- `nombre` (VARCHAR(100))
+- `fecha` (DATE, Unique)
+- `recurrente` (BOOLEAN, Default False) - Indica si el feriado se repite anualmente (ignora el año al validar)
+- `created_at` (TIMESTAMP)
+
+
 ---
+
 
 ## 3. Backend (Node.js + Express)
 
@@ -66,6 +75,10 @@ Estructura de la API REST que expondrá los siguientes endpoints:
   - `POST /api/horas-extra` (Registrar y calcular automáticamente)
   - `PUT /api/horas-extra/:id/estado` (Autorizar o rechazar un registro)
   - `GET /api/horas-extra/reporte-mensual` (Obtener datos agrupados para el reporte)
+- **Feriados:**
+  - `GET /api/feriados` (Listar todos los feriados registrados)
+  - `POST /api/feriados` (Crear nuevo feriado)
+  - `DELETE /api/feriados/:id` (Eliminar un feriado registrado)
 
 ### Lógica de Cálculo en el Servidor (Controladores):
 Al recibir una petición de registro (`POST /api/horas-extra`):
@@ -75,6 +88,8 @@ Al recibir una petición de registro (`POST /api/horas-extra`):
 4. Se aplica el factor según `tipo_jornada` (1.25 para suplementarias, 2.00 para extraordinarias).
 5. **Cálculo Nocturno**: Se verifica si las horas caen dentro del rango de 19:00 a 06:00. Por cada hora dentro de este rango, se aplica un recargo del 25% (+0.25 al factor).
 6. **Validación de Límites LOSEP**: Se realiza una consulta agregada para verificar que el funcionario no supere las 4 horas suplementarias al día, ni las 12 horas suplementarias en la semana correspondiente.
+7. **Validación de Fecha Futura**: Se valida que la fecha del registro no sea posterior al día de hoy (fecha actual del servidor). Si la fecha es futura, la solicitud se rechaza con un error 400.
+
 
 ---
 
@@ -86,6 +101,7 @@ Al recibir una petición de registro (`POST /api/horas-extra`):
   - `Login`: Pantalla de inicio de sesión segura.
   - `Dashboard`: Panel principal con estadísticas de horas pendientes y autorizadas.
   - `Funcionarios`: Panel de administración para el personal.
+  - `Feriados`: Vista para gestionar el calendario de feriados institucionales (Admin).
   - `RegistroHoras`: Formulario interactivo con cálculo automático en vivo y un componente de autocompletado interactivo (Searchable Dropdown) para filtrar personal por nombre o número de cédula en tiempo real.
   - `Aprobaciones`: Vista para que el rol 'autorizador' apruebe/rechace registros.
   - `Reportes`: Filtros por mes/año, vista de datos y botones de exportación (el formato PDF debe maquetar los bloques de firma para 'Elaborado por', 'Revisado por' y 'Autorizado por').

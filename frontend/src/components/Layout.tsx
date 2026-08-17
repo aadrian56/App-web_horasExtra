@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LogOut, Users, Clock, CheckSquare, FileText, LayoutDashboard } from 'lucide-react';
+import { LogOut, Users, Clock, CheckSquare, FileText, LayoutDashboard, Calendar } from 'lucide-react';
 
 export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, logout } = useAuth();
@@ -16,6 +16,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   const menuItems = [
     { path: '/', label: 'Inicio', icon: <LayoutDashboard className="w-5 h-5 mr-3" />, roles: ['admin', 'autorizador', 'operador'] },
     { path: '/funcionarios', label: 'Funcionarios', icon: <Users className="w-5 h-5 mr-3" />, roles: ['admin', 'operador'] },
+    { path: '/feriados', label: 'Feriados', icon: <Calendar className="w-5 h-5 mr-3" />, roles: ['admin'] },
     { path: '/registro', label: 'Registrar Horas', icon: <Clock className="w-5 h-5 mr-3" />, roles: ['admin', 'operador'] },
     { path: '/aprobaciones', label: 'Aprobaciones', icon: <CheckSquare className="w-5 h-5 mr-3" />, roles: ['admin', 'autorizador'] },
     { path: '/reportes', label: 'Reportes', icon: <FileText className="w-5 h-5 mr-3" />, roles: ['admin', 'autorizador', 'operador'] },

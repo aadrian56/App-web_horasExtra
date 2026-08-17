@@ -14,6 +14,30 @@ async function seed() {
   console.log('Connected to MySQL for seeding...');
 
   try {
+    // 0. Crear la tabla feriados si no existe
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS feriados (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        nombre VARCHAR(100) NOT NULL,
+        fecha DATE NOT NULL UNIQUE,
+        recurrente BOOLEAN DEFAULT FALSE,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      ) ENGINE=InnoDB;
+    `);
+    
+    // Asegurar que la columna recurrente existe (por si la tabla ya fue creada previamente sin ella)
+    try {
+      await connection.query("ALTER TABLE feriados ADD COLUMN IF NOT EXISTS recurrente BOOLEAN DEFAULT FALSE;");
+    } catch (err) {
+      try {
+        await connection.query("ALTER TABLE feriados ADD COLUMN recurrente BOOLEAN DEFAULT FALSE;");
+      } catch (alterErr) {
+        // Ignorar si la columna ya existe
+      }
+    }
+    console.log("Tabla 'feriados' creada o ya existente.");
+
+
     // 1. Insertar Funcionarios
     const funcionarios = [
       { cedula: '1400111111', nombres: 'Carlos Antonio Torres Vaca', tipo: 'guardia', rmu: 550.00 },
@@ -156,6 +180,27 @@ async function seed() {
           ]
         );
         console.log(`Registro insertado para funcionario ${h.funcionario_id} en fecha ${h.fecha}`);
+      }
+    }
+
+    // 3. Insertar Feriados Semilla
+    const feriadosSemilla = [
+      { nombre: 'Año Nuevo', fecha: '2026-01-01', recurrente: 1 },
+      { nombre: 'Día del Trabajo', fecha: '2026-05-01', recurrente: 1 },
+      { nombre: 'Batalla de Pichincha', fecha: '2026-05-24', recurrente: 1 },
+      { nombre: 'Primer Grito de Independencia', fecha: '2026-08-10', recurrente: 1 },
+      { nombre: 'Cantonización de Sucúa', fecha: '2026-12-08', recurrente: 1 },
+      { nombre: 'Navidad', fecha: '2026-12-25', recurrente: 1 }
+    ];
+
+    for (const f of feriadosSemilla) {
+      const [existing] = await connection.query('SELECT id FROM feriados WHERE fecha = ?', [f.fecha]);
+      if (existing.length > 0) {
+        console.log(`Feriado para la fecha ${f.fecha} ya existe. Actualizando recurrencia.`);
+        await connection.query('UPDATE feriados SET recurrente = ? WHERE id = ?', [f.recurrente, existing[0].id]);
+      } else {
+        await connection.query('INSERT INTO feriados (nombre, fecha, recurrente) VALUES (?, ?, ?)', [f.nombre, f.fecha, f.recurrente]);
+        console.log(`Feriado '${f.nombre}' insertado para la fecha ${f.fecha}`);
       }
     }
 

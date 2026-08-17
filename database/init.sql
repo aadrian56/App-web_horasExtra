@@ -52,3 +52,12 @@ CREATE TABLE IF NOT EXISTS registro_horas_extra (
     INDEX idx_fecha (fecha),
     INDEX idx_estado (estado)
 ) ENGINE=InnoDB;
+
+-- 5. Tabla de Feriados (Calendario dinámico)
+CREATE TABLE IF NOT EXISTS feriados (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    fecha DATE NOT NULL UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
