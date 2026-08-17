@@ -132,6 +132,14 @@ export const RegistroHoras: React.FC = () => {
     setLiveValor(valorTotal);
   }, [funcionarioId, horaInicio, horaFin, tipoJornada, funcionarios, fecha]);
 
+  const getTodayString = () => {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  };
+
   const checkEsFeriadoODescanso = (fechaStr: string): boolean => {
     if (!fechaStr) return false;
     const [year, month, day] = fechaStr.split('-').map(Number);
@@ -165,6 +173,12 @@ export const RegistroHoras: React.FC = () => {
     e.preventDefault();
     if (!funcionarioId || !fecha || !horaInicio || !horaFin) {
       addToast('error', 'Por favor, complete todos los campos.');
+      return;
+    }
+
+    const todayStr = getTodayString();
+    if (fecha > todayStr) {
+      addToast('error', 'No se pueden registrar horas extra para fechas futuras.');
       return;
     }
 
@@ -295,6 +309,7 @@ export const RegistroHoras: React.FC = () => {
                   id="input_fecha"
                   type="date"
                   required
+                  max={getTodayString()}
                   value={fecha}
                   onChange={(e) => handleFechaChange(e.target.value)}
                   className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sucua-green focus:border-transparent min-h-[44px]"

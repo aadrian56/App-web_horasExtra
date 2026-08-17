@@ -79,8 +79,9 @@ Este archivo contiene el desglose de tareas necesarias para construir el sistema
 - [x] **Tarea 9.6:** Modificar `RegistroHoras.tsx` para que `checkEsFeriadoODescanso` valide feriados recurrentes omitiendo el año en la comparación.
 
 ## Fase 10: Restricción de Fecha Futura
-- [ ] **Tarea 10.1:** Modificar la ruta `POST /api/horas-extra` en `server.js` para validar que la fecha recibida no sea superior a la fecha actual del servidor.
-- [ ] **Tarea 10.2:** Actualizar el input de fecha en `RegistroHoras.tsx` para configurar el atributo `max` dinámicamente y validar el envío del lado del cliente.
+- [x] **Tarea 10.1:** Modificar la ruta `POST /api/horas-extra` en `server.js` para validar que la fecha recibida no sea superior a la fecha actual del servidor.
+- [x] **Tarea 10.2:** Actualizar el input de fecha en `RegistroHoras.tsx` para configurar el atributo `max` dinámicamente y validar el envío del lado del cliente.
+
 
 
 

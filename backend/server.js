@@ -218,6 +218,14 @@ app.post('/api/horas-extra', authenticateToken, async (req, res) => {
     // 0. Validar si la fecha corresponde a un feriado o fin de semana
     const dateParts = fecha.split('-').map(Number);
     const dateObj = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
+
+    // A. Validar que la fecha no sea futura
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (dateObj > today) {
+      return res.status(400).json({ error: 'No se pueden registrar horas extra para fechas futuras.' });
+    }
+
     const dayOfWeek = dateObj.getDay(); // 0: Domingo, 6: Sábado
     const esFinDeSemana = dayOfWeek === 0 || dayOfWeek === 6;
 
