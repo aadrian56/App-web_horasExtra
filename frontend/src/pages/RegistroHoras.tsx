@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo, useRef } from 'react';
 import api from '../services/api';
 import { Button } from '../components/Button';
 import { Toast } from '../components/Toast';
 import type { ToastMessage } from '../components/Toast';
 import { StatusBadge } from '../components/StatusBadge';
-import { Calendar, User, Clock, AlertTriangle, Calculator, FileCheck } from 'lucide-react';
+import { Calendar, User, Clock, AlertTriangle, Calculator, FileCheck, X } from 'lucide-react';
 import { calcularValorPago } from '../utils/calculations';
 import { esFeriadoODescanso } from '../utils/holidays';
 
@@ -39,11 +39,36 @@ export const RegistroHoras: React.FC = () => {
 
   // Campos Formulario
   const [funcionarioId, setFuncionarioId] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
   const [fecha, setFecha] = useState('');
-  const [horaInicio, setHoraInicio] = useState('17:00');
-  const [horaFin, setHoraFin] = useState('21:00');
+  const [horaInicio, setHoraInicio] = useState('16:30');
+  const [horaFin, setHoraFin] = useState('20:30');
   const [tipoJornada, setTipoJornada] = useState<'suplementaria' | 'extraordinaria'>('suplementaria');
   const [submitting, setSubmitting] = useState(false);
+
+  // Filtrado reactivo de funcionarios para el buscador
+  const filteredFuncionarios = useMemo(() => {
+    if (!searchTerm || (funcionarioId && searchTerm.includes('C.I.'))) return funcionarios;
+    const term = searchTerm.toLowerCase().trim();
+    return funcionarios.filter(f => 
+      f.nombres_apellidos.toLowerCase().includes(term) ||
+      f.cedula.includes(term)
+    );
+  }, [funcionarios, searchTerm, funcionarioId]);
+
+  // Manejador para cerrar el dropdown al hacer clic fuera del componente
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // Estados previsualización en vivo (Glassmorphism)
   const [liveHours, setLiveHours] = useState(0);
@@ -133,6 +158,7 @@ export const RegistroHoras: React.FC = () => {
       addToast('success', 'Registro de horas extra guardado correctamente.');
       // Limpiar Formulario
       setFuncionarioId('');
+      setSearchTerm('');
       setFecha('');
       fetchData();
     } catch (err: any) {
@@ -167,27 +193,74 @@ export const RegistroHoras: React.FC = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-1" htmlFor="select_funcionario">
+                <label className="block text-sm font-semibold text-slate-700 mb-1">
                   Funcionario *
                 </label>
-                <div className="relative">
-                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                <div className="relative" ref={dropdownRef}>
+                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 z-10">
                     <User className="w-5 h-5" />
                   </span>
-                  <select
-                    id="select_funcionario"
-                    required
-                    value={funcionarioId}
-                    onChange={(e) => setFuncionarioId(e.target.value)}
-                    className="w-full pl-10 pr-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sucua-green focus:border-transparent min-h-[44px]"
-                  >
-                    <option value="">Seleccione Funcionario...</option>
-                    {funcionarios.map((f) => (
-                      <option key={f.id} value={f.id}>
-                        {f.nombres_apellidos} ({f.tipo === 'guardia' ? 'Guardia' : 'Limpieza'})
-                      </option>
-                    ))}
-                  </select>
+                  
+                  <input
+                    type="text"
+                    placeholder="Escriba nombre o número de cédula..."
+                    value={searchTerm}
+                    onChange={(e) => {
+                      setSearchTerm(e.target.value);
+                      setIsOpen(true);
+                      if (!e.target.value) {
+                        setFuncionarioId('');
+                      }
+                    }}
+                    onFocus={() => setIsOpen(true)}
+                    className="w-full pl-10 pr-10 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sucua-green focus:border-transparent min-h-[44px] text-sm text-slate-700 font-semibold bg-white"
+                  />
+
+                  {searchTerm && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSearchTerm('');
+                        setFuncionarioId('');
+                        setIsOpen(false);
+                      }}
+                      className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600 cursor-pointer z-10"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  )}
+
+                  {isOpen && (
+                    <div className="absolute z-20 mt-1 w-full bg-white border border-slate-200 rounded-xl shadow-lg max-h-60 overflow-y-auto divide-y divide-slate-100">
+                      {filteredFuncionarios.length === 0 ? (
+                        <div className="p-3 text-sm text-slate-500 text-center font-medium">
+                          No se encontraron resultados
+                        </div>
+                      ) : (
+                        filteredFuncionarios.map((f) => (
+                          <div
+                            key={f.id}
+                            onClick={() => {
+                              setFuncionarioId(f.id.toString());
+                              setSearchTerm(`${f.nombres_apellidos} (C.I. ${f.cedula})`);
+                              setIsOpen(false);
+                            }}
+                            className="px-4 py-2.5 hover:bg-slate-50 cursor-pointer transition-colors duration-150 flex items-center justify-between text-xs"
+                          >
+                            <div>
+                              <div className="font-bold text-slate-800 text-sm">{f.nombres_apellidos}</div>
+                              <div className="text-slate-400 font-semibold mt-0.5">Cédula: {f.cedula}</div>
+                            </div>
+                            <span className={`px-2 py-0.5 rounded text-[10px] font-black uppercase ${
+                              f.tipo === 'guardia' ? 'bg-teal-50 text-teal-700' : 'bg-amber-50 text-amber-800'
+                            }`}>
+                              {f.tipo}
+                            </span>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
 

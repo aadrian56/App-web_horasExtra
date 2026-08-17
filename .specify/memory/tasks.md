@@ -38,6 +38,7 @@ Este archivo contiene el desglose de tareas necesarias para construir el sistema
 - [x] **Tarea 4.2:** Desarrollar la pantalla de Administración de Funcionarios (Formulario adaptable y accesible).
 - [x] **Tarea 4.3:** Desarrollar la pantalla de Registro de Horas Extra:
   - [x] Implementar el visualizador dinámico de cálculo en vivo (Glassmorphism con gradiente animado) al cambiar horas de inicio/fin en el formulario.
+  - [x] Implementar buscador interactivo de funcionario por nombre y por número de cédula en tiempo real.
 - [x] **Tarea 4.4:** Desarrollar la pantalla de Aprobación de Horas (exclusiva para el rol autorizador).
 - [x] **Tarea 4.5:** Implementar la detección automática de jornada (feriados/fines de semana) al elegir la fecha.
 

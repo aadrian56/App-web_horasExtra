@@ -20,7 +20,7 @@ Como **Administrador**, quiero poder gestionar (Crear, Leer, Actualizar, Activar
 ### Módulo 2: Registro e Ingreso de Horas Extra
 Como **Administrador/Operador**, quiero registrar las horas extra trabajadas por un funcionario.
 - **Campos del Registro**:
-  - Selección de Funcionario (filtrable por nombre o cédula).
+  - Selección de Funcionario: Buscador interactivo en tiempo real que permita buscar y filtrar tanto por nombre y apellidos como por número de cédula de 10 dígitos.
   - Fecha del trabajo ejecutado.
   - Hora de Inicio y Hora de Fin (formato de 24 horas).
   - Tipo de Hora Extra:

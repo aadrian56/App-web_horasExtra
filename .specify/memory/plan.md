@@ -86,7 +86,7 @@ Al recibir una petición de registro (`POST /api/horas-extra`):
   - `Login`: Pantalla de inicio de sesión segura.
   - `Dashboard`: Panel principal con estadísticas de horas pendientes y autorizadas.
   - `Funcionarios`: Panel de administración para el personal.
-  - `RegistroHoras`: Formulario interactivo con cálculo automático simulado en vivo.
+  - `RegistroHoras`: Formulario interactivo con cálculo automático en vivo y un componente de autocompletado interactivo (Searchable Dropdown) para filtrar personal por nombre o número de cédula en tiempo real.
   - `Aprobaciones`: Vista para que el rol 'autorizador' apruebe/rechace registros.
   - `Reportes`: Filtros por mes/año, vista de datos y botones de exportación (el formato PDF debe maquetar los bloques de firma para 'Elaborado por', 'Revisado por' y 'Autorizado por').
 - `/src/services`: Conexiones API (Axios).
