@@ -6,6 +6,7 @@ import type { ToastMessage } from '../components/Toast';
 import { StatusBadge } from '../components/StatusBadge';
 import { Calendar, User, Clock, AlertTriangle, Calculator, FileCheck } from 'lucide-react';
 import { calcularValorPago } from '../utils/calculations';
+import { esFeriadoODescanso } from '../utils/holidays';
 
 interface Funcionario {
   id: number;
@@ -104,6 +105,14 @@ export const RegistroHoras: React.FC = () => {
     setLiveValor(valorTotal);
   }, [funcionarioId, horaInicio, horaFin, tipoJornada, funcionarios, fecha]);
 
+  const handleFechaChange = (val: string) => {
+    setFecha(val);
+    if (val) {
+      const esDescanso = esFeriadoODescanso(val);
+      setTipoJornada(esDescanso ? 'extraordinaria' : 'suplementaria');
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!funcionarioId || !fecha || !horaInicio || !horaFin) {
@@ -191,9 +200,16 @@ export const RegistroHoras: React.FC = () => {
                   type="date"
                   required
                   value={fecha}
-                  onChange={(e) => setFecha(e.target.value)}
+                  onChange={(e) => handleFechaChange(e.target.value)}
                   className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sucua-green focus:border-transparent min-h-[44px]"
                 />
+                {fecha && (
+                  <p className={`text-xs mt-1 font-semibold ${esFeriadoODescanso(fecha) ? 'text-amber-600' : 'text-sucua-green'}`}>
+                    {esFeriadoODescanso(fecha) 
+                      ? '⏳ Descanso obligatorio (Fin de semana / Feriado)' 
+                      : '✓ Jornada regular (Lunes a Viernes)'}
+                  </p>
+                )}
               </div>
             </div>
 
@@ -237,18 +253,12 @@ export const RegistroHoras: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-1" htmlFor="select_jornada">
-                  Tipo de Jornada *
+                <label className="block text-sm font-semibold text-slate-700 mb-1">
+                  Tipo de Jornada
                 </label>
-                <select
-                  id="select_jornada"
-                  value={tipoJornada}
-                  onChange={(e) => setTipoJornada(e.target.value as 'suplementaria' | 'extraordinaria')}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sucua-green focus:border-transparent min-h-[44px]"
-                >
-                  <option value="suplementaria">Suplementaria (Semana)</option>
-                  <option value="extraordinaria">Extraordinaria (Finde/Feriado)</option>
-                </select>
+                <div className="w-full px-3 py-2 border border-slate-200 bg-slate-50 text-slate-700 font-semibold rounded-lg min-h-[44px] flex items-center">
+                  {tipoJornada === 'suplementaria' ? 'Suplementaria (Semana)' : 'Extraordinaria (Finde/Feriado)'}
+                </div>
               </div>
             </div>
 

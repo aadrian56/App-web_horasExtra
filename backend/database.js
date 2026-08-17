@@ -16,10 +16,98 @@ const mockUsers = [
 const mockFuncionarios = [
   { id: 1, cedula: '1400654321', nombres_apellidos: 'Juan Carlos Perez Avila', tipo: 'guardia', rmu: 527.00, estado: 1 },
   { id: 2, cedula: '1400987654', nombres_apellidos: 'Maria Elena Chimbo Naula', tipo: 'limpieza', rmu: 497.00, estado: 1 },
-  { id: 3, cedula: '1400123456', nombres_apellidos: 'Segundo Miguel Carchi Gomez', tipo: 'guardia', rmu: 527.00, estado: 0 }
+  { id: 3, cedula: '1400123456', nombres_apellidos: 'Segundo Miguel Carchi Gomez', tipo: 'guardia', rmu: 527.00, estado: 0 },
+  { id: 7, cedula: '1400111111', nombres_apellidos: 'Carlos Antonio Torres Vaca', tipo: 'guardia', rmu: 550.00, estado: 1 },
+  { id: 8, cedula: '1400222222', nombres_apellidos: 'Luis Alfonso Morocho Chamba', tipo: 'guardia', rmu: 527.00, estado: 1 },
+  { id: 9, cedula: '1400333333', nombres_apellidos: 'Rosa Matilda Guaman Ortiz', tipo: 'limpieza', rmu: 497.00, estado: 1 }
 ];
 
-const mockHorasExtra = [];
+const mockHorasExtra = [
+  {
+    id: 1,
+    funcionario_id: 7,
+    fecha: '2026-08-12',
+    hora_inicio: '17:00:00',
+    hora_fin: '20:00:00',
+    tipo_jornada: 'suplementaria',
+    horas_calculadas: 3.00,
+    valor_calculado: 9.17,
+    rmu_historico: 550.00,
+    estado: 'pendiente',
+    autorizado_por: null,
+    fecha_autorizacion: null
+  },
+  {
+    id: 2,
+    funcionario_id: 7,
+    fecha: '2026-08-15',
+    hora_inicio: '08:00:00',
+    hora_fin: '12:00:00',
+    tipo_jornada: 'extraordinaria',
+    horas_calculadas: 4.00,
+    valor_calculado: 18.33,
+    rmu_historico: 550.00,
+    estado: 'autorizado',
+    autorizado_por: 1,
+    fecha_autorizacion: '2026-08-17T14:18:00.000Z'
+  },
+  {
+    id: 3,
+    funcionario_id: 8,
+    fecha: '2026-08-13',
+    hora_inicio: '18:00:00',
+    hora_fin: '21:00:00',
+    tipo_jornada: 'suplementaria',
+    horas_calculadas: 3.00,
+    valor_calculado: 9.33,
+    rmu_historico: 527.00,
+    estado: 'pendiente',
+    autorizado_por: null,
+    fecha_autorizacion: null
+  },
+  {
+    id: 4,
+    funcionario_id: 8,
+    fecha: '2026-08-16',
+    hora_inicio: '07:00:00',
+    hora_fin: '11:00:00',
+    tipo_jornada: 'extraordinaria',
+    horas_calculadas: 4.00,
+    valor_calculado: 17.57,
+    rmu_historico: 527.00,
+    estado: 'autorizado',
+    autorizado_por: 1,
+    fecha_autorizacion: '2026-08-17T14:18:00.000Z'
+  },
+  {
+    id: 5,
+    funcionario_id: 9,
+    fecha: '2026-08-14',
+    hora_inicio: '17:00:00',
+    hora_fin: '19:30:00',
+    tipo_jornada: 'suplementaria',
+    horas_calculadas: 2.50,
+    valor_calculado: 6.73,
+    rmu_historico: 497.00,
+    estado: 'pendiente',
+    autorizado_por: null,
+    fecha_autorizacion: null
+  },
+  {
+    id: 6,
+    funcionario_id: 9,
+    fecha: '2026-08-15',
+    hora_inicio: '09:00:00',
+    hora_fin: '13:00:00',
+    tipo_jornada: 'extraordinaria',
+    horas_calculadas: 4.00,
+    valor_calculado: 16.57,
+    rmu_historico: 497.00,
+    estado: 'autorizado',
+    autorizado_por: 1,
+    fecha_autorizacion: '2026-08-17T14:18:00.000Z'
+  }
+];
 
 // Probar conexión a MySQL
 try {

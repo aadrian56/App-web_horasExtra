@@ -52,6 +52,27 @@ Como **Administrador/Recursos Humanos**, quiero generar resúmenes del mes.
 - **Reporte Consolidado**: Resumen total del GAD para el mes (Lista de funcionarios con el total a pagar y total de horas extras por tipo).
 - **Exportación**: Botón para descargar el reporte en formato CSV/Excel o PDF para adjuntar a la nómina de pagos. **Nota**: El reporte PDF generado debe incluir de forma obligatoria los casilleros de firmas de responsabilidad ("Elaborado por", "Revisado por", "Autorizado por").
 
+### Módulo 6: Dashboard Interactivo
+Como **Administrador / Autorizador / Operador**, quiero visualizar un panel de control interactivo al iniciar sesión para analizar rápidamente el estado del sistema.
+- **Filtros Dinámicos**:
+  - Filtro por tipo de funcionario: "Todos", "Guardias", "Limpieza".
+  - Filtro por rango de fecha: "Todo", "Este mes", "Mes anterior", "Últimos 30 días".
+  - Filtro por estado del registro: "Todos", "Pendientes", "Autorizados", "Rechazados".
+- **Visualización de Métricas Clave**:
+  - Cantidad de funcionarios activos.
+  - Horas extras con autorización pendiente.
+  - Registros aprobados totales.
+  - Presupuesto o monto económico total aprobado.
+  - Todas las métricas deben reaccionar inmediatamente a los filtros activos.
+- **Gráficos SVG Interactivos**:
+  - **Gráfico de Dona (Distribución de Horas/Costos)**: Representación visual del tipo de horas extras y recargos aplicados (Suplementarias Diurnas/Nocturnas, Extraordinarias Diurnas/Nocturnas). Al pasar el ratón (hover) sobre cada segmento, se debe mostrar un tooltip con el total monetario, de horas y su porcentaje relativo.
+  - **Gráfico de Barras (Tendencia de Horas)**: Histograma del volumen de horas registradas a lo largo de los meses o días del rango actual, con tooltips interactivos en cada barra.
+- **Análisis y Drill-Down por Funcionario**:
+  - Lista interactiva "Top 5 Funcionarios" ordenados por horas extra acumuladas.
+  - Al hacer clic en un funcionario de este top, se debe aplicar un filtro rápido (drill-down) que aísle toda la información del dashboard para dicho funcionario.
+- **Lista de Actividades Recientes**:
+  - Una tabla simplificada con los últimos registros que coincidan con los filtros aplicados para agilizar la revisión rápida.
+
 ---
 
 ## 3. Requerimientos No Funcionales

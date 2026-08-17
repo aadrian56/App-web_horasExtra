@@ -39,6 +39,8 @@ Este archivo contiene el desglose de tareas necesarias para construir el sistema
 - [x] **Tarea 4.3:** Desarrollar la pantalla de Registro de Horas Extra:
   - [x] Implementar el visualizador dinámico de cálculo en vivo (Glassmorphism con gradiente animado) al cambiar horas de inicio/fin en el formulario.
 - [x] **Tarea 4.4:** Desarrollar la pantalla de Aprobación de Horas (exclusiva para el rol autorizador).
+- [x] **Tarea 4.5:** Implementar la detección automática de jornada (feriados/fines de semana) al elegir la fecha.
+
 
 ## Fase 5: Reportes y Bloques de Firma
 - [x] **Tarea 5.1:** Crear la página de Reportes Mensuales con filtros por mes/año y vistas consolidadas.
@@ -50,3 +52,12 @@ Este archivo contiene el desglose de tareas necesarias para construir el sistema
 ## Fase 6: Pruebas y Validación
 - [x] **Tarea 6.1:** Crear pruebas unitarias con Vitest para verificar la matemática exacta de las fórmulas (valores con recargo ordinario, nocturno y combinados).
 - [x] **Tarea 6.2:** Probar la adaptabilidad responsive en pantallas de tablets y móviles simulando el flujo completo de registro y autorización.
+
+## Fase 7: Dashboards Interactivos
+- [x] **Tarea 7.1:** Diseñar y agregar los controles de filtros dinámicos (fecha, tipo de funcionario, estado del registro).
+- [x] **Tarea 7.2:** Implementar la lógica reactiva en frontend para recalcular métricas agregadas al cambiar los filtros.
+- [x] **Tarea 7.3:** Implementar el gráfico de dona SVG interactivo para la distribución de tipos de hora.
+- [x] **Tarea 7.4:** Implementar el gráfico de barras SVG interactivo para la tendencia temporal.
+- [x] **Tarea 7.5:** Implementar el ranking Top 5 de funcionarios con barra de progreso y drill-down interactivo.
+- [x] **Tarea 7.6:** Integrar la tabla de últimas actividades y aplicar los efectos y estilos visuales premium.
+

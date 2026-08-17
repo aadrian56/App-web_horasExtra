@@ -126,3 +126,32 @@ Para elevar el nivel de la aplicación a una estética premium y gubernamental, 
   - **Contraste Visual Elevado:** Colores de texto oscuro sobre fondos claros y viceversa para asegurar que el personal administrativo con vista cansada lea la información sin esfuerzo. Se evitará colocar texto blanco sobre el color amarillo institucional.
   - **Facilidad de Navegación (Teclado):** Formularios estructurados secuencialmente para que un operador de oficina pueda rellenar los datos rápidamente usando la tecla `Tab` para saltar de campo en campo.
   - **Mensajes Claros e Íconos:** Los estados (Autorizado, Pendiente, Rechazado) no dependerán solo del color verde o amarillo; irán acompañados de íconos explícitos (un check `✓` o un reloj `⏳`) y texto claro.
+
+### 5. Especificaciones Técnicas del Dashboard Interactivo
+
+Para implementar el panel de control de manera robusta y con alta performance, seguiremos el siguiente diseño técnico:
+
+#### A. Procesamiento de Datos y Estados en Frontend:
+* **Filtros en React State**:
+  * `filtroTipo`: `'todos' | 'guardia' | 'limpieza'` (Filtra registros por el tipo de funcionario).
+  * `filtroRango`: `'todos' | 'mes_actual' | 'mes_anterior' | 'ultimos_30_dias'` (Filtra registros por fecha).
+  * `filtroEstado`: `'todos' | 'pendiente' | 'autorizado' | 'rechazado'` (Filtra registros por estado).
+  * `filtroFuncionarioId`: `number | null` (Establece el filtro para la función de drill-down al hacer clic en el Top 5).
+* **Cálculo Dinámico**:
+  * Toda la agregación se realiza mediante `useMemo` en React para recalcular instantáneamente las métricas y los datasets de los gráficos cada vez que cambie un filtro, evitando llamadas redundantes a la API.
+
+#### B. Arquitectura de Gráficos Nativos (SVG):
+Para evitar conflictos de dependencias en React 19, implementamos gráficos personalizados 100% responsivos usando elementos nativos de SVG:
+* **Dona Segmentada (Distribución de Horas/Monto)**:
+  * Calculado usando las propiedades `strokeDasharray` y `strokeDashoffset` en círculos de SVG apilados.
+  * Lógica matemática: `porcentaje = (valor / total) * 100`, `offset = circunferencia - (porcentaje / 100) * circunferencia`.
+  * Estados `:hover` individuales y manejo de coordenadas del ratón para mostrar un tooltip flotante absolute con el desglose exacto (horas, recargos y valor).
+* **Gráfico de Barras Verticales (Tendencia)**:
+  * Dibujado con elementos `<rect>` posicionados proporcionalmente dentro de un contenedor SVG con viewBox.
+  * Ejes X e Y escalados dinámicamente con base en el valor máximo del conjunto de datos filtrado.
+  * Efecto hover con cambio de color y tooltip dinámico que muestra el mes/día y total acumulado.
+* **Barra de Progreso Horizontal (Ranking Top 5)**:
+  * Lista de los 5 funcionarios con más horas acumuladas.
+  * Representado con barras HTML/Tailwind usando anchos porcentuales (`style={{ width: `${percent}%` }}`).
+  * Evento `onClick` en la tarjeta o fila del funcionario para activar el drill-down, mutando `filtroFuncionarioId` e integrando un botón visual para "Limpiar filtro de funcionario".
+
