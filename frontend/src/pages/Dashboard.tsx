@@ -94,7 +94,7 @@ export const Dashboard: React.FC = () => {
 
       result = result.filter(h => {
         // Evitamos problemas de zona horaria parseando la fecha localmente
-        const hDate = new Date(h.fecha + 'T00:00:00');
+        const hDate = new Date(h.fecha.slice(0, 10) + 'T00:00:00');
         
         if (filtroRango === 'mes_actual') {
           return hDate.getFullYear() === currentYear && hDate.getMonth() === currentMonth;
@@ -229,7 +229,7 @@ export const Dashboard: React.FC = () => {
     if (filtroRango === 'todos') {
       // Agrupar por mes y año
       filteredData.forEach(h => {
-        const dateParts = h.fecha.split('-');
+        const dateParts = h.fecha.slice(0, 10).split('-');
         const year = dateParts[0];
         const monthIndex = parseInt(dateParts[1]) - 1;
         const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
@@ -258,7 +258,7 @@ export const Dashboard: React.FC = () => {
       ];
 
       filteredData.forEach(h => {
-        const dateParts = h.fecha.split('-');
+        const dateParts = h.fecha.slice(0, 10).split('-');
         const day = parseInt(dateParts[2]);
 
         const week = weeks.find(w => day >= w.min && day <= w.max);
@@ -769,7 +769,7 @@ export const Dashboard: React.FC = () => {
                         <div className="font-bold text-slate-800">{h.nombres_apellidos}</div>
                         <div className="text-[10px] text-slate-400 font-semibold">{h.cedula}</div>
                       </td>
-                      <td className="py-3">{h.fecha}</td>
+                      <td className="py-3">{h.fecha.slice(0, 10)}</td>
                       <td className="py-3 capitalize">
                         <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold ${
                           h.tipo_jornada === 'suplementaria' 
