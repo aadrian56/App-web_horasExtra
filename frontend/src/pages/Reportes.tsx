@@ -4,7 +4,6 @@ import { Button } from '../components/Button';
 import { Toast } from '../components/Toast';
 import type { ToastMessage } from '../components/Toast';
 import { Printer, Search, CalendarDays } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
 
 interface ReporteData {
   cedula: string;
@@ -44,7 +43,6 @@ interface Funcionario {
 }
 
 export const Reportes: React.FC = () => {
-  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<'consolidado' | 'individual'>('consolidado');
   const [anio, setAnio] = useState(new Date().getFullYear().toString());
   const [mes, setMes] = useState((new Date().getMonth() + 1).toString());
@@ -467,14 +465,7 @@ export const Reportes: React.FC = () => {
               {(() => {
                 const activeHR = admins.find(a => a.cargo === 'jefe_recursos' && a.activo);
                 const activeFinanzas = admins.find(a => a.cargo === 'director_finanzas' && a.activo);
-
-                const getElaboradoPorName = () => {
-                  if (!user) return 'Operador del Sistema';
-                  if (user.username === 'admin_sucua') return 'Administrador GAD Sucúa';
-                  if (user.username === 'jefe_rrhh') return 'Jefe de Recursos Humanos';
-                  if (user.username === 'operador_1') return 'Operador de Personal';
-                  return user.username.toUpperCase();
-                };
+                const activeBienes = admins.find(a => a.cargo === 'administrador_bienes' && a.activo);
 
                 return (
                   <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-12 text-center text-xs print:grid-cols-3 print:gap-4">
@@ -482,9 +473,11 @@ export const Reportes: React.FC = () => {
                     <div className="space-y-12">
                       <div className="border-t border-slate-400 mx-auto w-48 pt-2">
                         <p className="font-bold text-slate-800">ELABORADO POR</p>
-                        <p className="font-semibold text-slate-700 mt-1">{getElaboradoPorName()}</p>
-                        <p className="text-slate-500 text-[10px] mt-0.5">Operador Administrativo</p>
-                        <p className="text-[10px] text-slate-400">Recursos Humanos - GAD Sucúa</p>
+                        <p className="font-semibold text-slate-700 mt-1">
+                          {activeBienes ? activeBienes.nombres_apellidos : 'Tcnl. Hugo Vinicio Cueva'}
+                        </p>
+                        <p className="text-slate-500 text-[10px] mt-0.5">Administrador de Bienes Públicos</p>
+                        <p className="text-[10px] text-slate-400">Dirección Administrativa - GAD Sucúa</p>
                       </div>
                     </div>
 
