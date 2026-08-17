@@ -37,7 +37,8 @@ try {
   console.log('Conexión exitosa a la base de datos MySQL.');
   connection.release();
 } catch (error) {
-  console.warn('⚠️ No se pudo conectar a MySQL. Activando Base de Datos Simulada en memoria (Mock DB) para desarrollo...');
+  console.warn('⚠️ No se pudo conectar a MySQL:', error.message);
+  console.warn('Activando Base de Datos Simulada en memoria (Mock DB) para desarrollo...');
   useMock = true;
 }
 

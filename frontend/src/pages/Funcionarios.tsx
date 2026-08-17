@@ -3,7 +3,7 @@ import api from '../services/api';
 import { Button } from '../components/Button';
 import { Toast } from '../components/Toast';
 import type { ToastMessage } from '../components/Toast';
-import { Plus, Check, X, UserX, UserCheck } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
 
 interface Funcionario {
   id: number;
