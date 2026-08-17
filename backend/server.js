@@ -191,6 +191,90 @@ app.delete('/api/feriados/:id', authenticateToken, async (req, res) => {
   }
 });
 
+// --- RUTAS DE ADMINISTRATIVOS ---
+app.get('/api/administrativos', authenticateToken, async (req, res) => {
+  try {
+    const [rows] = await db.query('SELECT * FROM administrativos ORDER BY cargo ASC, activo DESC');
+    res.json(rows);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/administrativos', authenticateToken, async (req, res) => {
+  const { nombres_apellidos, cargo, activo } = req.body;
+
+  if (!nombres_apellidos || !cargo) {
+    return res.status(400).json({ error: 'El nombre y el cargo son requeridos.' });
+  }
+
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Acceso denegado. Solo administradores pueden gestionar administrativos.' });
+  }
+
+  const isActivo = activo ? 1 : 0;
+
+  try {
+    if (isActivo === 1) {
+      await db.query('UPDATE administrativos SET activo = 0 WHERE cargo = ?', [cargo]);
+    }
+
+    const [result] = await db.query(
+      'INSERT INTO administrativos (nombres_apellidos, cargo, activo) VALUES (?, ?, ?)',
+      [nombres_apellidos, cargo, isActivo]
+    );
+
+    res.status(201).json({ message: 'Administrativo registrado exitosamente.', id: result.insertId });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.put('/api/administrativos/:id', authenticateToken, async (req, res) => {
+  const { id } = req.params;
+  const { nombres_apellidos, cargo, activo } = req.body;
+
+  if (!nombres_apellidos || !cargo) {
+    return res.status(400).json({ error: 'El nombre y el cargo son requeridos.' });
+  }
+
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Acceso denegado. Solo administradores pueden gestionar administrativos.' });
+  }
+
+  const isActivo = activo ? 1 : 0;
+
+  try {
+    if (isActivo === 1) {
+      await db.query('UPDATE administrativos SET activo = 0 WHERE cargo = ?', [cargo]);
+    }
+
+    await db.query(
+      'UPDATE administrativos SET nombres_apellidos = ?, cargo = ?, activo = ? WHERE id = ?',
+      [nombres_apellidos, cargo, isActivo, id]
+    );
+
+    res.json({ message: 'Administrativo actualizado exitosamente.' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.delete('/api/administrativos/:id', authenticateToken, async (req, res) => {
+  const { id } = req.params;
+
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Acceso denegado. Solo administradores pueden gestionar administrativos.' });
+  }
+
+  try {
+    await db.query('DELETE FROM administrativos WHERE id = ?', [id]);
+    res.json({ message: 'Administrativo eliminado exitosamente.' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // --- RUTAS DE HORAS EXTRA ---
 app.get('/api/horas-extra', authenticateToken, async (req, res) => {
   try {

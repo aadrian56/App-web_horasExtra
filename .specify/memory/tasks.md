@@ -82,6 +82,16 @@ Este archivo contiene el desglose de tareas necesarias para construir el sistema
 - [x] **Tarea 10.1:** Modificar la ruta `POST /api/horas-extra` en `server.js` para validar que la fecha recibida no sea superior a la fecha actual del servidor.
 - [x] **Tarea 10.2:** Actualizar el input de fecha en `RegistroHoras.tsx` para configurar el atributo `max` dinámicamente y validar el envío del lado del cliente.
 
+## Fase 11: Módulo de Gestión de Administrativos (Firmas)
+- [x] **Tarea 11.1:** Crear la tabla `administrativos` en `init.sql`, agregando las columnas `id`, `nombres_apellidos`, `cargo` (enum) y `activo` (booleano).
+- [x] **Tarea 11.2:** Configurar la base de datos simulada en `database.js` definiendo `mockAdministrativos` y sus handlers de query CRUD correspondientes.
+- [x] **Tarea 11.3:** Agregar la lógica de creación de la tabla y la inserción de registros iniciales activos de ejemplo en `seed_db.js`.
+- [x] **Tarea 11.4:** Desarrollar los endpoints CRUD (`GET`, `POST`, `PUT`, `DELETE` sobre `/api/administrativos`) en `server.js` asegurando que solo haya un registro activo por cargo en simultáneo.
+- [x] **Tarea 11.5:** Crear la pantalla frontend `Administrativos.tsx` para la administración del personal administrativo y el control de firmas.
+- [x] **Tarea 11.6:** Registrar el componente en `App.tsx` y añadir la ruta con ícono de firmas en el menú lateral de `Layout.tsx`.
+
+
+
 
 
 

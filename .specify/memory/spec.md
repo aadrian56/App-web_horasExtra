@@ -86,8 +86,20 @@ Como **Administrador**, quiero gestionar (Crear, Leer, Eliminar) los feriados na
   - De coincidir, el sistema establecerá automáticamente el tipo de jornada en **Extraordinaria** (con recargo de 100%) y restringirá la selección manual a esta opción (o mostrará una advertencia restrictiva).
   - El servidor (backend) validará de forma independiente en la base de datos si la fecha es un feriado (fijo o variable) o fin de semana antes de procesar el cálculo, asegurando que las reglas de la LOSEP no sean evadidas.
 
+### Módulo 8: Gestión de Administrativos (Firmas)
+Como **Administrador**, quiero gestionar (Crear, Leer, Modificar, Eliminar) el personal administrativo que firma y autoriza los reportes de horas extra.
+- **Roles administrativos a gestionar**:
+  - Director Administrativo
+  - Director de Finanzas
+  - Jefe de Recursos Humanos
+  - Administrador de Bienes Públicos
+- **Reglas de negocio**:
+  - Cada administrativo debe contar con nombres y apellidos completos, un cargo específico (de los listados arriba) y un estado de actividad (Activo o Inactivo).
+  - **Exclusividad de Cargo Activo**: No puede haber más de un administrativo activo para el mismo cargo al mismo tiempo en el sistema.
+  - Al marcar o guardar un administrativo como **Activo**, el sistema debe desactivar automáticamente a cualquier otro administrativo que estuviera activo para ese mismo cargo.
 
 ---
+
 
 ## 3. Requerimientos No Funcionales
 

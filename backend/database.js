@@ -22,6 +22,13 @@ const mockFeriados = [
   { id: 6, nombre: 'Navidad', fecha: '2026-12-25', recurrente: 1 }
 ];
 
+const mockAdministrativos = [
+  { id: 1, nombres_apellidos: 'Ing. Fabián Andrés Calle', cargo: 'director_administrativo', activo: 1 },
+  { id: 2, nombres_apellidos: 'Mgs. Silvia Patricia Ortiz', cargo: 'director_finanzas', activo: 1 },
+  { id: 3, nombres_apellidos: 'Dra. Gabriela Elizabeth Ríos', cargo: 'jefe_recursos', activo: 1 },
+  { id: 4, nombres_apellidos: 'Tcnl. Hugo Vinicio Cueva', cargo: 'administrador_bienes', activo: 1 }
+];
+
 
 const mockFuncionarios = [
   { id: 1, cedula: '1400654321', nombres_apellidos: 'Juan Carlos Perez Avila', tipo: 'guardia', rmu: 527.00, estado: 1 },
@@ -384,6 +391,68 @@ const dbAdapter = {
       const index = mockFeriados.findIndex(f => f.id === parseInt(id));
       if (index !== -1) {
         mockFeriados.splice(index, 1);
+      }
+      return [{}];
+    }
+
+    // 18. SELECT administrativos
+    if (sqlClean.includes('select * from administrativos')) {
+      const sorted = [...mockAdministrativos].sort((a, b) => a.cargo.localeCompare(b.cargo));
+      return [sorted];
+    }
+
+    // 19. UPDATE deactivar otros de administrativos por cargo
+    if (sqlClean.includes('update administrativos set activo = 0 where cargo =')) {
+      const cargo = params[0];
+      mockAdministrativos.forEach(a => {
+        if (a.cargo === cargo) {
+          a.activo = 0;
+        }
+      });
+      return [{}];
+    }
+
+    // 20. INSERT administrativos
+    if (sqlClean.includes('insert into administrativos')) {
+      const [nombres_apellidos, cargo, activo] = params;
+      const newId = mockAdministrativos.length > 0 ? Math.max(...mockAdministrativos.map(a => a.id)) + 1 : 1;
+      mockAdministrativos.push({
+        id: newId,
+        nombres_apellidos,
+        cargo,
+        activo: activo ? 1 : 0
+      });
+      return [{ insertId: newId }];
+    }
+
+    // 21. UPDATE administrativos completo
+    if (sqlClean.includes('update administrativos set nombres_apellidos =') && sqlClean.includes('where id =')) {
+      const [nombres_apellidos, cargo, activo, id] = params;
+      const admin = mockAdministrativos.find(a => a.id === parseInt(id));
+      if (admin) {
+        admin.nombres_apellidos = nombres_apellidos;
+        admin.cargo = cargo;
+        admin.activo = activo ? 1 : 0;
+      }
+      return [{}];
+    }
+
+    // 22. UPDATE administrativos activo estado simple
+    if (sqlClean.includes('update administrativos set activo =') && sqlClean.includes('where id =')) {
+      const [activo, id] = params;
+      const admin = mockAdministrativos.find(a => a.id === parseInt(id));
+      if (admin) {
+        admin.activo = activo ? 1 : 0;
+      }
+      return [{}];
+    }
+
+    // 23. DELETE administrativos
+    if (sqlClean.includes('delete from administrativos where id =')) {
+      const id = params[0];
+      const index = mockAdministrativos.findIndex(a => a.id === parseInt(id));
+      if (index !== -1) {
+        mockAdministrativos.splice(index, 1);
       }
       return [{}];
     }

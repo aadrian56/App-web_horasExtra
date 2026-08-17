@@ -61,3 +61,13 @@ CREATE TABLE IF NOT EXISTS feriados (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
+-- 6. Tabla de Administrativos (Autoridades y firmas)
+CREATE TABLE IF NOT EXISTS administrativos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombres_apellidos VARCHAR(150) NOT NULL,
+    cargo ENUM('director_administrativo', 'director_finanzas', 'administrador_bienes', 'jefe_recursos') NOT NULL,
+    activo BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+

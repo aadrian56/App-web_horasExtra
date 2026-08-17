@@ -57,6 +57,13 @@ Diseñamos 3 tablas principales para cubrir las reglas de negocio e inmutabilida
 - `created_at` (TIMESTAMP)
 
 
+### Tabla 5: `administrativos`
+- `id` (INT, Primary Key, Auto Increment)
+- `nombres_apellidos` (VARCHAR(150), Not Null)
+- `cargo` (ENUM('director_administrativo', 'director_finanzas', 'administrador_bienes', 'jefe_recursos'), Not Null)
+- `activo` (BOOLEAN, Default True)
+- `created_at` (TIMESTAMP)
+
 ---
 
 
@@ -79,6 +86,12 @@ Estructura de la API REST que expondrá los siguientes endpoints:
   - `GET /api/feriados` (Listar todos los feriados registrados)
   - `POST /api/feriados` (Crear nuevo feriado)
   - `DELETE /api/feriados/:id` (Eliminar un feriado registrado)
+- **Administrativos:**
+  - `GET /api/administrativos` (Listar todos los administrativos)
+  - `POST /api/administrativos` (Registrar nuevo administrativo, deactivando anteriores del mismo cargo si se establece activo)
+  - `PUT /api/administrativos/:id` (Actualizar datos o activar administrativo deactivando a otros del mismo cargo)
+  - `DELETE /api/administrativos/:id` (Eliminar un administrativo)
+
 
 ### Lógica de Cálculo en el Servidor (Controladores):
 Al recibir una petición de registro (`POST /api/horas-extra`):

@@ -6,6 +6,7 @@ import { Login } from './pages/Login';
 import { Dashboard } from './pages/Dashboard';
 import { Funcionarios } from './pages/Funcionarios';
 import { Feriados } from './pages/Feriados';
+import { Administrativos } from './pages/Administrativos';
 import { RegistroHoras } from './pages/RegistroHoras';
 import { Aprobaciones } from './pages/Aprobaciones';
 import { Reportes } from './pages/Reportes';
@@ -30,6 +31,7 @@ function App() {
                     {/* Rutas de Admin */}
                     <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
                       <Route path="/feriados" element={<Feriados />} />
+                      <Route path="/administrativos" element={<Administrativos />} />
                     </Route>
 
                     {/* Rutas de Operador y Admin */}

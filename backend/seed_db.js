@@ -37,6 +37,19 @@ async function seed() {
     }
     console.log("Tabla 'feriados' creada o ya existente.");
 
+    // 0.B Crear la tabla administrativos si no existe
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS administrativos (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        nombres_apellidos VARCHAR(150) NOT NULL,
+        cargo ENUM('director_administrativo', 'director_finanzas', 'administrador_bienes', 'jefe_recursos') NOT NULL,
+        activo BOOLEAN DEFAULT TRUE,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+      ) ENGINE=InnoDB;
+    `);
+    console.log("Tabla 'administrativos' creada o ya existente.");
+
 
     // 1. Insertar Funcionarios
     const funcionarios = [
@@ -201,6 +214,23 @@ async function seed() {
       } else {
         await connection.query('INSERT INTO feriados (nombre, fecha, recurrente) VALUES (?, ?, ?)', [f.nombre, f.fecha, f.recurrente]);
         console.log(`Feriado '${f.nombre}' insertado para la fecha ${f.fecha}`);
+      }
+    }
+    // 4. Insertar Administrativos Semilla
+    const adminSemilla = [
+      { nombres: 'Ing. Fabián Andrés Calle', cargo: 'director_administrativo', activo: 1 },
+      { nombres: 'Mgs. Silvia Patricia Ortiz', cargo: 'director_finanzas', activo: 1 },
+      { nombres: 'Dra. Gabriela Elizabeth Ríos', cargo: 'jefe_recursos', activo: 1 },
+      { nombres: 'Tcnl. Hugo Vinicio Cueva', cargo: 'administrador_bienes', activo: 1 }
+    ];
+
+    for (const a of adminSemilla) {
+      const [existing] = await connection.query('SELECT id FROM administrativos WHERE cargo = ? AND nombres_apellidos = ?', [a.cargo, a.nombres]);
+      if (existing.length > 0) {
+        console.log(`Administrativo ${a.nombres} con cargo ${a.cargo} ya existe.`);
+      } else {
+        await connection.query('INSERT INTO administrativos (nombres_apellidos, cargo, activo) VALUES (?, ?, ?)', [a.nombres, a.cargo, a.activo]);
+        console.log(`Administrativo '${a.nombres}' insertado con cargo ${a.cargo}`);
       }
     }
 

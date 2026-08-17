@@ -4,6 +4,7 @@ import { Button } from '../components/Button';
 import { Toast } from '../components/Toast';
 import type { ToastMessage } from '../components/Toast';
 import { Printer, Search, CalendarDays } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 interface ReporteData {
   cedula: string;
@@ -43,6 +44,7 @@ interface Funcionario {
 }
 
 export const Reportes: React.FC = () => {
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<'consolidado' | 'individual'>('consolidado');
   const [anio, setAnio] = useState(new Date().getFullYear().toString());
   const [mes, setMes] = useState((new Date().getMonth() + 1).toString());
@@ -53,6 +55,20 @@ export const Reportes: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
+  const [admins, setAdmins] = useState<any[]>([]);
+
+  const fetchAdmins = async () => {
+    try {
+      const res = await api.get('/administrativos');
+      setAdmins(res.data);
+    } catch (err: any) {
+      addToast('error', 'Error al cargar los cargos administrativos.');
+    }
+  };
+
+  useEffect(() => {
+    fetchAdmins();
+  }, []);
 
   const addToast = (type: 'success' | 'error' | 'info', text: string) => {
     setToasts((prev) => [...prev, { id: Math.random().toString(), type, text }]);
@@ -448,34 +464,56 @@ export const Reportes: React.FC = () => {
               )}
 
               {/* Casilleros de Firmas de Responsabilidad */}
-              <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-12 text-center text-xs print:grid-cols-3 print:gap-4">
-                {/* Firma Elaborado */}
-                <div className="space-y-12">
-                  <div className="border-t border-slate-400 mx-auto w-48 pt-2">
-                    <p className="font-bold text-slate-800">ELABORADO POR</p>
-                    <p className="text-slate-500 mt-1">Operador Administrativo</p>
-                    <p className="text-[10px] text-slate-400">Recursos Humanos - GAD Sucúa</p>
-                  </div>
-                </div>
+              {(() => {
+                const activeHR = admins.find(a => a.cargo === 'jefe_recursos' && a.activo);
+                const activeFinanzas = admins.find(a => a.cargo === 'director_finanzas' && a.activo);
 
-                {/* Firma Revisado */}
-                <div className="space-y-12">
-                  <div className="border-t border-slate-400 mx-auto w-48 pt-2">
-                    <p className="font-bold text-slate-800">REVISADO POR</p>
-                    <p className="text-slate-500 mt-1">Jefe de Recursos Humanos</p>
-                    <p className="text-[10px] text-slate-400">Talento Humano - GAD Sucúa</p>
-                  </div>
-                </div>
+                const getElaboradoPorName = () => {
+                  if (!user) return 'Operador del Sistema';
+                  if (user.username === 'admin_sucua') return 'Administrador GAD Sucúa';
+                  if (user.username === 'jefe_rrhh') return 'Jefe de Recursos Humanos';
+                  if (user.username === 'operador_1') return 'Operador de Personal';
+                  return user.username.toUpperCase();
+                };
 
-                {/* Firma Autorizado */}
-                <div className="space-y-12">
-                  <div className="border-t border-slate-400 mx-auto w-48 pt-2">
-                    <p className="font-bold text-slate-800">AUTORIZADO POR</p>
-                    <p className="text-slate-500 mt-1">Director(a) Financiero(a)</p>
-                    <p className="text-[10px] text-slate-400">Alcaldía / GAD Sucúa</p>
+                return (
+                  <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-12 text-center text-xs print:grid-cols-3 print:gap-4">
+                    {/* Firma Elaborado */}
+                    <div className="space-y-12">
+                      <div className="border-t border-slate-400 mx-auto w-48 pt-2">
+                        <p className="font-bold text-slate-800">ELABORADO POR</p>
+                        <p className="font-semibold text-slate-700 mt-1">{getElaboradoPorName()}</p>
+                        <p className="text-slate-500 text-[10px] mt-0.5">Operador Administrativo</p>
+                        <p className="text-[10px] text-slate-400">Recursos Humanos - GAD Sucúa</p>
+                      </div>
+                    </div>
+
+                    {/* Firma Revisado */}
+                    <div className="space-y-12">
+                      <div className="border-t border-slate-400 mx-auto w-48 pt-2">
+                        <p className="font-bold text-slate-800">REVISADO POR</p>
+                        <p className="font-semibold text-slate-700 mt-1">
+                          {activeHR ? activeHR.nombres_apellidos : 'Dra. Gabriela Elizabeth Ríos'}
+                        </p>
+                        <p className="text-slate-500 text-[10px] mt-0.5">Jefe de Recursos Humanos</p>
+                        <p className="text-[10px] text-slate-400">Talento Humano - GAD Sucúa</p>
+                      </div>
+                    </div>
+
+                    {/* Firma Autorizado */}
+                    <div className="space-y-12">
+                      <div className="border-t border-slate-400 mx-auto w-48 pt-2">
+                        <p className="font-bold text-slate-800">AUTORIZADO POR</p>
+                        <p className="font-semibold text-slate-700 mt-1">
+                          {activeFinanzas ? activeFinanzas.nombres_apellidos : 'Mgs. Silvia Patricia Ortiz'}
+                        </p>
+                        <p className="text-slate-500 text-[10px] mt-0.5">Director(a) Financiero(a)</p>
+                        <p className="text-[10px] text-slate-400">Alcaldía / GAD Sucúa</p>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
+                );
+              })()}
 
             </div>
           )}
